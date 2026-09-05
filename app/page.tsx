@@ -10,8 +10,6 @@ const destinations = [
 ];
 
 export default function HomePage() {
-  const hasRedirect = Boolean(process.env.REDIRECT_URL);
-
   return (
     <main className="hero-sky relative min-h-screen overflow-hidden px-5 py-8 sm:px-8 sm:py-12">
       <div className="pointer-events-none absolute inset-0 opacity-40">
@@ -89,20 +87,13 @@ export default function HomePage() {
               </div>
             </div>
 
-            {hasRedirect ? (
-              <a
-                href="/api/go"
-                className="cta group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1c7a4a] px-5 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(28,122,74,0.35)] transition hover:bg-[#17663e]"
-              >
-                Ver ofertas agora
-                <span className="cta-plane transition-transform">→</span>
-              </a>
-            ) : (
-              <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-800">
-                REDIRECT_URL não configurada. Defina a variável de ambiente
-                para ativar o redirecionamento.
-              </p>
-            )}
+            <a
+              href="/api/go"
+              className="cta group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1c7a4a] px-5 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(28,122,74,0.35)] transition hover:bg-[#17663e]"
+            >
+              Ver ofertas agora
+              <span className="cta-plane transition-transform">→</span>
+            </a>
 
             <p className="mt-4 text-center text-xs text-[#10231c]/55">
               Você será encaminhado para as ofertas disponíveis neste momento.
