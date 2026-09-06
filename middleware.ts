@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getActiveIso } from "@/lib/market";
 
 const COUNTRY_HEADERS = [
   "x-vercel-ip-country",
@@ -76,7 +77,15 @@ async function lookupCountry(ip: string): Promise<string | null> {
   return null;
 }
 
+const PUBLIC_PATHS = ["/terminos-y-condiciones", "/tratamiento-de-datos"];
+
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  if (PUBLIC_PATHS.includes(pathname)) {
+    return NextResponse.next();
+  }
+
   const redirectUrl = process.env.REDIRECT_URL;
 
   if (!redirectUrl) {
@@ -93,7 +102,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (country === "BR") {
+  if (country === getActiveIso()) {
     return NextResponse.redirect(redirectUrl, 302);
   }
 

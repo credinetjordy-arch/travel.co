@@ -5,7 +5,7 @@ export function GET() {
 
   if (!redirectUrl) {
     return NextResponse.json(
-      { error: "REDIRECT_URL não configurada" },
+      { error: "REDIRECT_URL no configurada" },
       { status: 500 },
     );
   }

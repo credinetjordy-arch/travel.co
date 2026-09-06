@@ -1,15 +1,11 @@
+import Link from "next/link";
+import { getActiveMarket } from "@/lib/markets";
+
 export const dynamic = "force-dynamic";
 
-const destinations = [
-  { city: "Rio de Janeiro", code: "GIG" },
-  { city: "São Paulo", code: "GRU" },
-  { city: "Salvador", code: "SSA" },
-  { city: "Recife", code: "REC" },
-  { city: "Fortaleza", code: "FOR" },
-  { city: "Florianópolis", code: "FLN" },
-];
-
 export default function HomePage() {
+  const market = getActiveMarket();
+
   return (
     <main className="hero-sky relative min-h-screen overflow-hidden px-5 py-8 sm:px-8 sm:py-12">
       <div className="pointer-events-none absolute inset-0 opacity-40">
@@ -28,25 +24,25 @@ export default function HomePage() {
                 travel.co
               </p>
               <p className="text-xs uppercase tracking-[0.22em] text-white/70">
-                Passagens aéreas
+                {market.ticketsLabel}
               </p>
             </div>
           </div>
-          <p className="hidden text-sm text-white/70 sm:block">Brasil</p>
+          <p className="hidden text-sm text-white/70 sm:block">
+            {market.countryName}
+          </p>
         </header>
 
         <section className="my-auto grid items-center gap-10 py-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="text-white">
             <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-amber-100">
-              Ofertas exclusivas
+              {market.badge}
             </p>
             <h1 className="font-[family-name:var(--font-fraunces)] text-4xl leading-[1.1] sm:text-6xl">
-              As melhores ofertas de passagens aéreas do Brasil
+              {market.title}
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">
-              A travel.co reúne promoções de voos nacionais e internacionais
-              para você viajar agora. Clique abaixo e acesse as ofertas do
-              momento.
+              {market.lead}
             </p>
           </div>
 
@@ -57,10 +53,10 @@ export default function HomePage() {
             <div className="flex items-start justify-between border-b border-dashed border-[#10231c]/15 pb-5">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-[#1c7a4a]">
-                  Cartão de embarque
+                  {market.boardingPass}
                 </p>
                 <p className="mt-1 font-[family-name:var(--font-fraunces)] text-2xl">
-                  Ofertas do dia
+                  {market.dailyOffers}
                 </p>
               </div>
               <span className="plane text-3xl">✈️</span>
@@ -69,21 +65,21 @@ export default function HomePage() {
             <div className="grid grid-cols-3 gap-3 py-6 text-sm">
               <div>
                 <p className="text-xs uppercase tracking-widest text-[#10231c]/50">
-                  De
+                  {market.fromLabel}
                 </p>
-                <p className="mt-1 text-xl font-semibold">BR</p>
+                <p className="mt-1 text-xl font-semibold">{market.iso}</p>
               </div>
               <div className="text-center">
                 <p className="text-xs uppercase tracking-widest text-[#10231c]/50">
-                  Para
+                  {market.toLabel}
                 </p>
-                <p className="mt-1 text-xl font-semibold">Mundo</p>
+                <p className="mt-1 text-xl font-semibold">{market.toValue}</p>
               </div>
               <div className="text-right">
                 <p className="text-xs uppercase tracking-widest text-[#10231c]/50">
-                  Classe
+                  {market.classLabel}
                 </p>
-                <p className="mt-1 text-xl font-semibold">Promo</p>
+                <p className="mt-1 text-xl font-semibold">{market.classValue}</p>
               </div>
             </div>
 
@@ -91,21 +87,21 @@ export default function HomePage() {
               href="/api/go"
               className="cta group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1c7a4a] px-5 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(28,122,74,0.35)] transition hover:bg-[#17663e]"
             >
-              Ver ofertas agora
+              {market.cta}
               <span className="cta-plane transition-transform">→</span>
             </a>
 
             <p className="mt-4 text-center text-xs text-[#10231c]/55">
-              Você será encaminhado para as ofertas disponíveis neste momento.
+              {market.ctaHint}
             </p>
           </article>
         </section>
 
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {destinations.map((destination) => (
+          {market.destinations.map((destination) => (
             <li
               key={destination.code}
-              className="rounded-2xl border border-white/10 bg-white/8 px-3 py-3 text-white backdrop-blur-sm"
+              className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3 text-white backdrop-blur-sm"
             >
               <p className="text-xs uppercase tracking-[0.16em] text-amber-200">
                 {destination.code}
@@ -114,6 +110,29 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+
+        <section className="mt-10 rounded-[28px] border border-white/10 bg-white/10 px-6 py-6 text-white sm:px-8">
+          <h2 className="font-[family-name:var(--font-fraunces)] text-2xl">
+            {market.infoTitle}
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/75">
+            {market.infoBody}
+          </p>
+        </section>
+
+        <footer className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-white/70">
+          <p>
+            © {new Date().getFullYear()} travel.co — {market.countryName}
+          </p>
+          <nav className="flex flex-wrap gap-x-5 gap-y-2">
+            <Link className="hover:text-white" href="/terminos-y-condiciones">
+              {market.termsLinkLabel}
+            </Link>
+            <Link className="hover:text-white" href="/tratamiento-de-datos">
+              {market.privacyLinkLabel}
+            </Link>
+          </nav>
+        </footer>
       </div>
     </main>
   );

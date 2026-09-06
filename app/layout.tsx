@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
+import { getActiveMarket } from "@/lib/markets";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -14,19 +15,25 @@ const outfit = Outfit({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "travel.co — Ofertas de passagens aéreas no Brasil",
-  description:
-    "Encontre as melhores ofertas de passagens aéreas no Brasil. Voos nacionais e internacionais com preços especiais.",
-};
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const market = getActiveMarket();
+  return {
+    title: market.metaTitle,
+    description: market.metaDescription,
+  };
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const market = getActiveMarket();
+
   return (
-    <html lang="pt-BR">
+    <html lang={market.lang}>
       <body className={`${fraunces.variable} ${outfit.variable}`}>{children}</body>
     </html>
   );
