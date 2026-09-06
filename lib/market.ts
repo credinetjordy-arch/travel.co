@@ -1,3 +1,5 @@
+import { ACTIVE_COUNTRY as CONFIG_COUNTRY } from "./country-config";
+
 export const MARKET_IDS = ["1", "2", "3", "4", "5"] as const;
 
 export type MarketId = (typeof MARKET_IDS)[number];
@@ -11,7 +13,7 @@ export const MARKET_ISO = {
 } as const;
 
 export function getActiveMarketId(): MarketId {
-  const raw = process.env.ACTIVE_COUNTRY?.trim() ?? "1";
+  const raw = (process.env.ACTIVE_COUNTRY?.trim() || CONFIG_COUNTRY).trim();
   if (MARKET_IDS.includes(raw as MarketId)) {
     return raw as MarketId;
   }
