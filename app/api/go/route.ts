@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 
-export function GET() {
-  const redirectUrl = process.env.REDIRECT_URL;
+export function GET(request: Request) {
+  const redirectUrl = process.env.REDIRECT_URL?.trim();
 
   if (!redirectUrl) {
-    return NextResponse.json(
-      { error: "REDIRECT_URL no configurada" },
-      { status: 500 },
-    );
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return NextResponse.redirect(redirectUrl, 302);
+  try {
+    return NextResponse.redirect(new URL(redirectUrl).toString(), 302);
+  } catch {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 }

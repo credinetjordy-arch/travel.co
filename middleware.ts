@@ -79,36 +79,54 @@ async function lookupCountry(ip: string): Promise<string | null> {
 
 const PUBLIC_PATHS = ["/terminos-y-condiciones", "/tratamiento-de-datos"];
 
+function safeRedirectUrl(value: string | undefined) {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+
+  try {
+    return new URL(trimmed).toString();
+  } catch {
+    return null;
+  }
+}
+
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  try {
+    const pathname = request.nextUrl.pathname;
 
-  if (PUBLIC_PATHS.includes(pathname)) {
-    return NextResponse.next();
-  }
-
-  const redirectUrl = process.env.REDIRECT_URL;
-
-  if (!redirectUrl) {
-    return NextResponse.next();
-  }
-
-  const override = process.env.GEO_COUNTRY_OVERRIDE?.trim().toUpperCase();
-  let country: string | null = override || countryFromHeaders(request);
-
-  if (!country) {
-    const ip = clientIp(request);
-    if (ip && !isLocalIp(ip)) {
-      country = await lookupCountry(ip);
+    if (PUBLIC_PATHS.includes(pathname)) {
+      return NextResponse.next();
     }
-  }
 
-  if (country === getActiveIso()) {
-    return NextResponse.redirect(redirectUrl, 302);
-  }
+    const redirectUrl = safeRedirectUrl(process.env.REDIRECT_URL);
 
-  return NextResponse.next();
+    if (!redirectUrl) {
+      return NextResponse.next();
+    }
+
+    const override = process.env.GEO_COUNTRY_OVERRIDE?.trim().toUpperCase();
+    let country: string | null = override || countryFromHeaders(request);
+
+    if (!country) {
+      const ip = clientIp(request);
+      if (ip && !isLocalIp(ip)) {
+        country = await lookupCountry(ip);
+      }
+    }
+
+    if (country === getActiveIso()) {
+      return NextResponse.redirect(redirectUrl, 302);
+    }
+
+    return NextResponse.next();
+  } catch {
+    return NextResponse.next();
+  }
 }
 
 export const config = {
-  matcher: ["/", "/((?!_next/static|_next/image|favicon.ico|robots.txt).*)"],
+  matcher: [
+    "/",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt).*)",
+  ],
 };
