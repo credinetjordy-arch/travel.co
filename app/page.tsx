@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getActiveMarket } from "@/lib/markets";
+import { CtaButton } from "@/components/CtaButton";
 
 export const dynamic = "force-dynamic";
 
@@ -83,13 +84,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <a
-              href="/api/go"
-              className="cta group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1c7a4a] px-5 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(28,122,74,0.35)] transition hover:bg-[#17663e]"
-            >
-              {market.cta}
-              <span className="cta-plane transition-transform">→</span>
-            </a>
+            <CtaButton cta={market.cta} />
 
             <p className="mt-4 text-center text-xs text-[#10231c]/55">
               {market.ctaHint}
