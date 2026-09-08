@@ -13,7 +13,7 @@ export function CtaButton({ cta }: { cta: string }) {
     <a
       href="/api/go"
       onClick={handleClick}
-      className="cta group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1c7a4a] px-5 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(28,122,74,0.35)] transition hover:bg-[#17663e]"
+      className="cta group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#e30613] px-5 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(227,6,19,0.45)] transition hover:bg-[#b8050f]"
     >
       {cta}
       <span className="cta-plane transition-transform">→</span>

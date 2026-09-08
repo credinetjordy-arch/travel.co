@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #10231c;
-  --leaf: #1c7a4a;
-  --gold: #e4b84a;
+  --ink: #1d1d1b;
+  --leaf: #e30613;
+  --gold: #e30613;
   --sand: #f6efe2;
   --cream: #fffaf1;
 }
@@ -21,14 +21,14 @@ body {
 body {
   font-family: var(--font-outfit), system-ui, sans-serif;
   color: var(--ink);
-  background: #07140f;
+  background: #140508;
 }
 
 .hero-sky {
   background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(228, 184, 74, 0.28), transparent 55%),
-    radial-gradient(900px 500px at 10% 110%, rgba(28, 122, 74, 0.45), transparent 50%),
-    linear-gradient(165deg, #0b1f18 0%, #143528 42%, #1a4630 100%);
+    radial-gradient(1200px 600px at 80% -10%, rgba(227, 6, 19, 0.42), transparent 55%),
+    radial-gradient(900px 500px at 10% 110%, rgba(227, 6, 19, 0.38), transparent 50%),
+    linear-gradient(165deg, #1a0508 0%, #3a0a12 42%, #5c1018 100%);
 }
 
 .ticket {
@@ -42,7 +42,7 @@ body {
 .ticket-notch {
   width: 28px;
   height: 28px;
-  background: #123226;
+  background: #3a0a12;
   border-radius: 999px;
 }
 
