@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 
-const PIXEL_ID = "1730783021459853";
+const PIXEL_ID = "1105146191851548";
 
 export function MetaPixel() {
   return (
@@ -19,7 +19,6 @@ export function MetaPixel() {
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '${PIXEL_ID}');
           fbq('track', 'PageView');
-          fbq('track', 'AddPaymentInfo');
         `}
       </Script>
       <noscript>
@@ -29,13 +28,6 @@ export function MetaPixel() {
           alt=""
           style={{ display: "none" }}
           src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
-        />
-        <img
-          height="1"
-          width="1"
-          alt=""
-          style={{ display: "none" }}
-          src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=AddPaymentInfo&noscript=1`}
         />
       </noscript>
     </>
