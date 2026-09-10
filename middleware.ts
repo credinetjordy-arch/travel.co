@@ -90,6 +90,49 @@ function safeRedirectUrl(value: string | undefined) {
   }
 }
 
+function countryFlag(iso: string | null) {
+  if (!iso || !/^[A-Z]{2}$/.test(iso)) return "🏳️";
+  return String.fromCodePoint(
+    ...[...iso].map((letter) => 127397 + letter.charCodeAt(0)),
+  );
+}
+
+function isPrefetch(request: NextRequest) {
+  return (
+    request.headers.get("next-router-prefetch") === "1" ||
+    request.headers.get("purpose") === "prefetch" ||
+    (request.headers.get("sec-purpose") || "").includes("prefetch")
+  );
+}
+
+function isBot(request: NextRequest) {
+  return /bot|crawl|spider|preview|facebookexternalhit|whatsapp|telegram/i.test(
+    request.headers.get("user-agent") || "",
+  );
+}
+
+async function notifyTelegram(message: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
+  if (!token || !chatId) return;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        disable_web_page_preview: true,
+      }),
+      cache: "no-store",
+      signal: AbortSignal.timeout(1200),
+    });
+  } catch {
+    // Aviso opcional: no debe romper el redirect ni la página.
+  }
+}
+
 export async function middleware(request: NextRequest) {
   try {
     const pathname = request.nextUrl.pathname;
@@ -106,15 +149,31 @@ export async function middleware(request: NextRequest) {
 
     const override = process.env.GEO_COUNTRY_OVERRIDE?.trim().toUpperCase();
     let country: string | null = override || countryFromHeaders(request);
+    const ip = clientIp(request);
 
-    if (!country) {
-      const ip = clientIp(request);
-      if (ip && !isLocalIp(ip)) {
-        country = await lookupCountry(ip);
-      }
+    if (!country && ip && !isLocalIp(ip)) {
+      country = await lookupCountry(ip);
     }
 
-    if (country === getActiveIso()) {
+    const redirected = country === getActiveIso();
+
+    if (
+      pathname === "/" &&
+      request.method === "GET" &&
+      ip &&
+      !isLocalIp(ip) &&
+      !isPrefetch(request) &&
+      !isBot(request)
+    ) {
+      const flag = countryFlag(country);
+      const visitor = `${flag} ${ip} (${country || "??"})`;
+      const text = redirected
+        ? `${visitor}\nPerú — redirigido exitosamente`
+        : `${visitor}\nFuera de Perú — se quedó en la página`;
+      await notifyTelegram(text);
+    }
+
+    if (redirected) {
       return NextResponse.redirect(redirectUrl, 302);
     }
 
